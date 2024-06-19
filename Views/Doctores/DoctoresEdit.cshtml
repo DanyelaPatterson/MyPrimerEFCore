@@ -7,7 +7,7 @@
         <h1 class="display-2">Editar Doctor: @Model.Name</h1>
     </div>
 
-<form asp-controller="Doctores" asp-action="DoctoresEdit">
+<form asp-controller="Doctores" asp-action="DoctoresEdit" method="post">
 
     <div class="mb-3">
         <label for="nombre"  class="form-label"> Nombre</label>
@@ -52,7 +52,7 @@
     </div>
 
     <div asp-validation-summary="All" class="Text-danger"></div>
-
+    
     <button type="submit" class="btn btn-primary">Guardar</button>
     <a asp-controller="Doctores" asp-action="DoctorList" class="btn btn-secundary mb-3"> Regresar </a>
 

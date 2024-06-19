@@ -7,12 +7,11 @@
 
     <div class="text-center">
 
-
         <h2>@DateTime.Now</h2>
         <i>@fechaRegistro.ToLongDateString()</i>
-
         <h1 class="display-5">Listado de Doctores</h1>
-        <a asp-controller="Doctores" asp-action="DoctoresAdd" class="btn btn-primary mb-3"> Agregar Doctor </a>
+
+        <a class="btn btn-success" asp-controller="Doctores" asp-action="DoctoresAdd"> Agregar Doctor </a>
 
     </div>
 
@@ -46,7 +45,7 @@
                         <td> 
                             <a class="btn btn-primary" asp-controller="Doctores" asp-action="DoctoresEdit" asp-route-id="@doctor.Id">Editar</a>
 
-                            <a class="btn btn-danger" asp-controller="Doctores" asp-action="DoctoresShowToDelete" asp-route-id="@doctor.Id">Borrar</a>
+                            <a class="btn btn-danger" asp-controller="Doctores" asp-action="DoctoresDeleted" asp-route-id="@doctor.Id">Borrar</a>
                         </td>
                     </tr>
                 }
@@ -56,4 +55,3 @@
 
             </tfoot>
         </table>
-    

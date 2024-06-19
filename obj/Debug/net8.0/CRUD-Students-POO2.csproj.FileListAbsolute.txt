@@ -134,3 +134,4 @@ C:\POO2\Parcial_2\CRUD-Students-POO2\CRUD-Students-POO2\obj\Debug\net8.0\refint\
 C:\POO2\Parcial_2\CRUD-Students-POO2\CRUD-Students-POO2\obj\Debug\net8.0\CRUD-Students-POO2.pdb
 C:\POO2\Parcial_2\CRUD-Students-POO2\CRUD-Students-POO2\obj\Debug\net8.0\CRUD-Students-POO2.genruntimeconfig.cache
 C:\POO2\Parcial_2\CRUD-Students-POO2\CRUD-Students-POO2\obj\Debug\net8.0\ref\CRUD-Students-POO2.dll
+C:\POO2\Parcial_2\CRUD-Students-POO2\CRUD-Students-POO2\obj\Debug\net8.0\CRUD-Students-POO2.sourcelink.json

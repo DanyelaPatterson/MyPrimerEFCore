@@ -22,12 +22,10 @@ namespace CRUD_Students_POO2.Entities
         [Required(ErrorMessage = "La especialidad del doctor es requerida")]
         public string specialism { get; set; }
 
-        [Required(ErrorMessage = "El número de teléfono del doctor es requerido")]
-        [RegularExpression(@"^\d{10}$", ErrorMessage = "El número de teléfono debe tener 10 dígitos")]
         public int Tel { get; set; }
         public long Cel { get; set; }
 
-        [Required(ErrorMessage = "La dirección del doctor es requerida")]
+        [Required(ErrorMessage = "La dirección es requerida")]
         public string address { get; set; }
     }
 }

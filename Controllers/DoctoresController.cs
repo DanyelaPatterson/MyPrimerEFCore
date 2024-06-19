@@ -5,6 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using CRUD_Students_POO2.Entities;
+using System.Data.Common;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.EntityFrameworkCore;
 
 namespace CRUD_Students_POO2.Controllers
 {
@@ -25,33 +28,41 @@ namespace CRUD_Students_POO2.Controllers
         }
 
             [HttpPost]
-public IActionResult DoctoresAdd(DoctoresModel model)
-{
-    if (!ModelState.IsValid)
-    {
-        // Manejar el caso donde el modelo no es válido
-        return View(model);
-    }
+        public IActionResult DoctoresAdd(DoctoresModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+            // Manejar el caso donde el modelo no es válido
+            return View(model);
+            }
 
-    // Crear el objeto Doctores y asignar los valores del modelo
-    Doctores doctores = new Doctores();
-    doctores.Id = Guid.NewGuid();
-    // Asignar otros campos...
+            // Crear el objeto Doctores y asignar los valores del modelo
+            Doctores nuevoDoctor = new Doctores()
+            {
+                Id = Guid.NewGuid(), // Generar un nuevo GUID para el ID del doctor
+                Name = model.Name,
+                LastName = model.LastName,
+                Age = model.Age,
+                specialism = model.specialism,
+                Tel = model.Tel,
+                Cel = model.Cel,
+                address = model.address
+            };
 
-    // Agregar el nuevo doctor al contexto y guardar los cambios en la base de datos
-    _context.Doctores.Add(doctores);
-    _context.SaveChanges();
+            // Agregar el nuevo doctor al contexto y guardar los cambios en la base de datos
+            _context.Doctores.Add(nuevoDoctor);
+             _context.SaveChanges();
 
-    // Redirigir a la acción DoctorList para mostrar la lista actualizada
-    return RedirectToAction("DoctorList");
-}
+            // Redirigir a la acción DoctorList para mostrar la lista actualizada
+            return RedirectToAction("DoctorList");
+        }
 
 
         public IActionResult DoctorList()
         {
             //PARA CARGAR INFO = SELECT
             List<DoctoresModel> list = 
-            _context.Doctores.Select(d => new DoctoresModel
+            _context.Doctores.Select(static d => new DoctoresModel
             
             {
                 Id = d.Id,
@@ -64,17 +75,24 @@ public IActionResult DoctoresAdd(DoctoresModel model)
                 address = d.address            
             }).ToList();
 
-            _logger.LogInformation("Esto es un mensaje al cargar la información de los doctores");
+            _logger.LogInformation("Cargando lista de doctores");
 
             return View(list);
             
         }
 
-        public IActionResult DoctoresEdit(Guid id)
+        [HttpGet]
+        public IActionResult DoctoresDeleted(int Id)
         {
-            DoctoresModel doctor = _context.Doctores
-            .Where(d => d.Id == id).Select(d => new DoctoresModel
+            Doctores doctor = this._context.Doctores.Where(d => d.Id = Id).First();
+
+            if (doctor == null)
             {
+                return RedirectToAction("DoctoresList","Doctores");
+
+            }
+
+            Doctores doctores = new Doctores()
                 Id = d.Id,
                 Name = d.Name,
                 LastName = d.LastName,
@@ -83,66 +101,84 @@ public IActionResult DoctoresAdd(DoctoresModel model)
                 Tel = d.Tel,
                 Cel = d.Cel,
                 address = d.address
-            }).FirstOrDefault();
 
-            return View(doctor);
+            return View (doctores);
         }
 
         [HttpPost]
-        public IActionResult DoctoresEdit(DoctoresModel model)
+        public IActionResult DoctoresDeleted(DoctoresModel doctoresModel)
         {
-            if (ModelState.IsValid)
+            bool exists = this._context.Doctores.Any(a => a.Id == doctoresModel.Id);
+            if (!exists)
             {
-                Doctores doctorToUpdate = _context.Doctores.Find(model.Id);
-                if (doctorToUpdate != null)
-                {
-                    doctorToUpdate.Name = model.Name;
-                    doctorToUpdate.LastName = model.LastName;
-                    doctorToUpdate.Age = model.Age;
-                    doctorToUpdate.specialism = model.specialism;
-                    doctorToUpdate.Tel = model.Tel;
-                    doctorToUpdate.Cel = model.Cel;
-                    doctorToUpdate.address = model.address;
-
-                    _context.SaveChanges();
-                    _logger.LogInformation("El modelo es válido y se ha actualizado correctamente");
-                    return RedirectToAction("DoctorList");
-                }
+                return View (doctoresModel);
             }
 
-            _logger.LogWarning("El modelo no es valido");
+            Doctores doctores = this._context.Doctores.Where (d => d.Id == doctoresModel.Id).First();
+            doctores.Id=doctores.Id;
+            doctores.Name=doctores.Name;
+            doctores.LastName=doctores.LastName;
+            doctores.Age=doctores.Age;
+            doctores.specialism = doctores.specialism;
+            doctores.Tel=doctores.Tel;
+            doctores.Cel=doctores.Cel;
+            doctores.address=doctores.address;
+
+            this._context.Doctores.Remove(doctores);
+            this._context.SaveChanges();
+
+            return RedirectToAction("DoctoresList","Doctores");
+
+            
+        }
+    
+    [HttpGet]
+    public IActionResult DoctoresEdit(int Id)
+    {
+            Doctores doctor = this._context.Doctores.Where(d => d.Id = Id).First();
+
+            if (doctor==null)
+            {
+                return RedirectToAction("DoctoresList","Doctores");
+            }
+
+            DoctoresModel model = new DoctoresModel();
+            model.Id = doctor.Id;
+            model.Name = doctor.Name;
+            model.LastName = doctor.LastName;
+            model.Age = doctor.Age;
+            model.specialism = doctor.specialism;
+            model.Tel = doctor.Tel;
+            model.Cel = doctor.Cel;
+            model.address = doctor.address;
+
             return View(model);
-        }
+        
+    }
 
-        public IActionResult DoctoresDeleted(Guid id)
+     [HttpPost]
+     public IActionResult DoctoresEdit(DoctoresModel doctoresModel)
+     {
+        Doctores doctores1 = this._context.Doctores
+        .Where(d => d.Id == doctoresModel.Id).First();
+
+        if(doctoresModel == null)
         {
-            DoctoresModel doctor = _context.Doctores.Where(d => d.Id == id).Select(d => new DoctoresModel
-            {
-                Id = d.Id,
-                Name = d.Name,
-                LastName = d.LastName,
-                Age = d.Age,
-                specialism = d.specialism,
-                Tel = d.Tel,
-                Cel = d.Cel,
-                address = d.address
-            }).FirstOrDefault();
-
-            return View(doctor);
+            return RedirectToAction("VehiculosModel");
         }
+        doctores1.Name = doctoresModel.Name;
+        doctores1.LastName = doctoresModel.LastName;
+        doctores1.Age = doctoresModel.Age;
+        doctores1.specialism = doctoresModel.specialism;
+        doctores1.Tel = doctoresModel.Tel;
+        doctores1.Cel = doctoresModel.Cel;
+        doctores1.address = doctoresModel.address;
 
-        [HttpPost]
-        public IActionResult DoctoresDelete(Guid id)
-        {
-            Doctores doctorToDelete = _context.Doctores.Find(id);
-            if (doctorToDelete != null)
-            {
-                _context.Doctores.Remove(doctorToDelete);
-                _context.SaveChanges();
-                _logger.LogInformation("Doctor eliminado correctamente");
-            }
 
-            return RedirectToAction("DoctorList");
-        }
+        this._context.Doctores.Update(doctores1);
+        this._context.SaveChanges();
+       
+       return RedirectToAction("VehiculosList","Vehiculos");
+     }
     }
 }
